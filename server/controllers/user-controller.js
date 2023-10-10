@@ -1,50 +1,70 @@
+import { validationResult } from "express-validator";
 import { userService, mailService, tokenService } from '../services/index.js'
+import { ApiError} from "../utils/errors.js";
+import {userModel} from "../models/index.js";
 
 export const create = async (req, res, next) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+           return next(ApiError.BadRequest('Validation error', errors.array()));
+        }
       const {email, password} = req.body;
       const userData = await userService.registration(email, password);
-      return res.json(userData)
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 15 * 24 * 60 * 60 * 1000, httpOnly: true});
+      return res.json(userData);
+    } catch (e) {
+        next(e);
+    }
+}
+
+export const login = async (req, res, next) => {
+    try {
+     const {email, password} = req.body;
+     const userData = await userService.login(email, password);
+        res.cookie('refreshToken', userData.refreshToken, {maxAge: 15 * 24 * 60 * 60 * 1000, httpOnly: true});
+        return res.json(userData);
     } catch (e) {
         console.log(e);
     }
 }
 
-export const login = (req, res, next) => {
+export const logout = async (req, res, next) => {
     try {
-
+        const {refreshToken} = req.cookies;
+    const token = await userService.logout(refreshToken);
+    res.clearCookie('refreshToken');
+    return res.json(token);
     } catch (e) {
         console.log(e);
     }
 }
 
-export const logout = (req, res, next) => {
+export const refresh = async (req, res, next) => {
     try {
-
+        const {refreshToken} = req.cookies;
+        const userData = await userService.refresh(refreshToken);
+        res.cookie('refreshToken', userData.refreshToken, {maxAge: 15 * 24 * 60 * 60 * 1000, httpOnly: true});
+        return res.json(userData);
     } catch (e) {
         console.log(e);
     }
 }
 
-export const refresh = (req, res, next) => {
+export const activate = async (req, res, next) => {
     try {
-
+    const activationLink = req.params.link;
+    await userService.activate(activationLink);
+    return res.redirect(process.env.CLIENT_URL);
     } catch (e) {
         console.log(e);
     }
 }
 
-export const activate = (req, res, next) => {
+export const getUsers = async (req, res, next) => {
     try {
-
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-export const getUsers = (req, res, next) => {
-    try {
-      res.json(['test123'])
+        const users = await userService.getAllUsers();
+          return res.json(users);
     } catch (e) {
         console.log(e);
     }
