@@ -13,6 +13,9 @@ export const GuardedRoute: FC<GuardedRouteProps> = ({
 }) => {
   const { currentUser } = useSessionStore();
 
+  console.log('currentUser', currentUser);
+  console.log('isAuthenticated', isAuthenticated)
+
   if (!isAuthenticated) {
     if (!currentUser?.id) return <Navigate to="/login" replace />;
   }

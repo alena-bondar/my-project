@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { combine } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
-import { User } from '../../types';
+import {AuthResponse, User} from '../../types';
 import { bindObject } from '../../utils/zustand-utils';
 
 export const useSessionStore = create(
@@ -13,13 +13,15 @@ export const useSessionStore = create(
             },
             (set, get) =>
                 bindObject({
-                    setSession(user: User) {
+                    setSession(data: AuthResponse) {
+                        localStorage.setItem('token', data.accessToken)
                         set({
-                            currentUser: user,
+                            currentUser: data.user,
                         });
                     },
 
                     removeSession() {
+                        localStorage.removeItem('token')
                         set({
                             currentUser: null,
                         });

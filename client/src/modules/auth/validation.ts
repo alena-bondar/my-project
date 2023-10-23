@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { z } from 'zod';
 
-export type LoginFormValues = z.infer<ReturnType<typeof useLoginValidation>>;
-export const loginDefaultValues: LoginFormValues = {
+export type AuthFormValues = z.infer<ReturnType<typeof useAuthValidation>>;
+export const authDefaultValues: AuthFormValues = {
     email: '',
     password: '',
 };
 
-export const useLoginValidation = () => {
+export const useAuthValidation = () => {
     return useMemo(
         () =>
             z.object({

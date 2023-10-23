@@ -32,14 +32,13 @@ export const Field = <
   const { field } = useController({
     name,
     control,
-    defaultValue,
   });
-
   return (
     <div>
       <p>{title}</p>
       <div>
         <input
+          {...field}
           type={type}
           name={field.name}
           placeholder={placeholder}

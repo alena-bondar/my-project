@@ -1,18 +1,27 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "../../components";
-import { loginDefaultValues, useLoginValidation } from "./validation";
-import {Button} from "../../components/Button";
+import {
+    authDefaultValues,
+    useAuthValidation,
+} from "./validation";
+import { Button } from "../../components/Button";
+import { useSignIn } from "./api/use-sign-in";
 
-export const Login = () => {
-  const loginValidation = useLoginValidation();
+export const SignIn = () => {
+  const authValidation = useAuthValidation();
+  const { mutate: signInUser } = useSignIn();
   const { control, handleSubmit } = useForm({
-    defaultValues: loginDefaultValues,
-    resolver: zodResolver(loginValidation),
+    defaultValues: authDefaultValues,
+    resolver: zodResolver(authValidation),
   });
 
   const handleFormSubmit = handleSubmit((values) => {
     console.log("VALUES", values);
+      signInUser({
+      email: values.email,
+      password: values.password,
+    });
   });
 
   return (
@@ -31,7 +40,7 @@ export const Login = () => {
         placeholder="Password"
         title="Password"
       />
-      <Button buttonType="submit" name="Submit"/>
+      <Button buttonType="submit" name="Login" />
     </form>
   );
 };
