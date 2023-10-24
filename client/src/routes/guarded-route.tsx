@@ -13,7 +13,6 @@ export const GuardedRoute: FC<GuardedRouteProps> = ({
 }) => {
   const { currentUser } = useSessionStore();
 
-  console.log('currentUser', currentUser);
   console.log('isAuthenticated', isAuthenticated)
 
   if (!isAuthenticated) {

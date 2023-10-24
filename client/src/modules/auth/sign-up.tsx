@@ -14,7 +14,6 @@ export const SignUp = () => {
   });
 
   const handleFormSubmit = handleSubmit((values) => {
-    console.log("VALUES", values);
       signUpUser({
       email: values.email,
       password: values.password,

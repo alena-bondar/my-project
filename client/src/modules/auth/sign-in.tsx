@@ -17,7 +17,6 @@ export const SignIn = () => {
   });
 
   const handleFormSubmit = handleSubmit((values) => {
-    console.log("VALUES", values);
       signInUser({
       email: values.email,
       password: values.password,
